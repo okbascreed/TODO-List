@@ -1,5 +1,8 @@
 package tasks;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.beans.Transient;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -8,10 +11,13 @@ public class Epic extends Task {
 
     private ArrayList<Subtask> subtasks = new ArrayList<>();
 
+    @SerializedName("Epic.duration")
     private int duration;
 
+    @SerializedName("Epic.startTime")
     private LocalDateTime startTime;
 
+    @SerializedName("Epic.endTime")
     private LocalDateTime endTime;
 
     public Epic(String name, String description) {
@@ -114,7 +120,7 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Tasks.Epic{" + "name=" + getName() + "," + "subtasks=" + subtasks + "," + "status=" + getStatus() +
+        return "Epic{" + "name=" + getName() + "," + "subtasks=" + subtasks + "," + "status=" + getStatus() +
                 ", epicId=" + getId() + ", duration=" + duration + ", startTime=" + startTime +
                 ", endTime=" + endTime +'}';
     }

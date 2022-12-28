@@ -8,21 +8,35 @@ import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
+import java.net.URL;
 import java.util.HashMap;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
 public class HttpTaskServer {
 
     private HttpServer httpServer;
-    static FileBackedTasksManager fileBackedTasksManager = FileBackedTasksManager.loadFromFile(new File("src/tasks/TasksHandlerFile.txt"));
+    static HttpTaskManager httpTaskManager;
+
+    static {
+        try {
+            httpTaskManager = new HttpTaskManager(new URL("http://localhost:8078"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public HttpTaskManager getHttpTaskManager(){
+        return httpTaskManager;
+    }
+
     private static Gson gson = new Gson();
 
     public void startHttpServer() throws IOException {
@@ -40,6 +54,12 @@ public class HttpTaskServer {
         System.out.println("Сервер запущен");
     }
 
+    public void stopHttpServer(){
+        httpServer.stop(0);
+    }
+
+
+
 
     static class TasksHandler implements HttpHandler {
 
@@ -54,7 +74,7 @@ public class HttpTaskServer {
             String[] pathSplit = path.split("/");
 
 
-            Set<Task> tasks = fileBackedTasksManager.getPrioritizedTasks();
+            Set<Task> tasks = httpTaskManager.getPrioritizedTasks();
 
 
             response = gson.toJson(tasks);
@@ -103,14 +123,14 @@ public class HttpTaskServer {
 
                         Map<String, String> params = queryToMap(exchange.getRequestURI().getQuery());
 
-                        response = gson.toJson(fileBackedTasksManager.getTaskById(Integer.parseInt(params.get("id"))));
+                        response = gson.toJson(httpTaskManager.getTaskById(Integer.parseInt(params.get("id"))));
 
                         exchange.sendResponseHeaders(200, 0);
                         try (OutputStream os = exchange.getResponseBody()) {
                             os.write(response.getBytes());
                         }
                     } else {
-                        response = gson.toJson(fileBackedTasksManager.getAllTasks());
+                        response = gson.toJson(httpTaskManager.getAllTasks());
 
                         exchange.sendResponseHeaders(200, 0);
                         try (OutputStream os = exchange.getResponseBody()) {
@@ -123,10 +143,10 @@ public class HttpTaskServer {
 
                     Task task = gson.fromJson(body, Task.class);
 
-                    if (fileBackedTasksManager.getAllTasks().contains(task)) {
-                        fileBackedTasksManager.updateTask(task);
+                    if (httpTaskManager.getAllTasks().contains(task)) {
+                        httpTaskManager.updateTask(task);
                     } else {
-                        fileBackedTasksManager.createTask(task);
+                        httpTaskManager.createTask(task);
                     }
                     response = "Задача успешно добавлена/обновлена";
                     exchange.sendResponseHeaders(200, 0);
@@ -141,7 +161,7 @@ public class HttpTaskServer {
 
                         Map<String, String> params = queryToMap(exchange.getRequestURI().getQuery());
 
-                        fileBackedTasksManager.deleteTaskById(Integer.parseInt(params.get("id")));
+                        httpTaskManager.deleteTaskById(Integer.parseInt(params.get("id")));
 
                         response = "Задача " + params.get("id") + " успешно удалена.";
 
@@ -151,7 +171,7 @@ public class HttpTaskServer {
                         }
 
                     } else {
-                        fileBackedTasksManager.removeAllTasks();
+                        httpTaskManager.removeAllTasks();
 
                         response = "Все Tasks успешно удалены.";
 
@@ -183,14 +203,14 @@ public class HttpTaskServer {
 
                         Map<String, String> params = TaskHandler.queryToMap(exchange.getRequestURI().getQuery());
 
-                        response = gson.toJson(fileBackedTasksManager.getSubtaskById(Integer.parseInt(params.get("id"))));
+                        response = gson.toJson(httpTaskManager.getSubtaskById(Integer.parseInt(params.get("id"))));
 
                         exchange.sendResponseHeaders(200, 0);
                         try (OutputStream os = exchange.getResponseBody()) {
                             os.write(response.getBytes());
                         }
                     } else {
-                        response = gson.toJson(fileBackedTasksManager.getAllSubTasks());
+                        response = gson.toJson(httpTaskManager.getAllSubTasks());
 
                         exchange.sendResponseHeaders(200, 0);
                         try (OutputStream os = exchange.getResponseBody()) {
@@ -203,10 +223,10 @@ public class HttpTaskServer {
 
                     Subtask subtask = gson.fromJson(body, Subtask.class);
 
-                    if (fileBackedTasksManager.getAllSubTasks().contains(subtask)) {
-                        fileBackedTasksManager.updateSubtask(subtask);
+                    if (httpTaskManager.getAllSubTasks().contains(subtask)) {
+                        httpTaskManager.updateSubtask(subtask);
                     } else {
-                        fileBackedTasksManager.updateSubtask(subtask);
+                        httpTaskManager.createSubtask(subtask);
                     }
                     response = "Задача успешно добавлена/обновлена";
                     exchange.sendResponseHeaders(200, 0);
@@ -221,7 +241,7 @@ public class HttpTaskServer {
 
                         Map<String, String> params = TaskHandler.queryToMap(exchange.getRequestURI().getQuery());
 
-                        fileBackedTasksManager.deleteSubtaskById(Integer.parseInt(params.get("id")));
+                        httpTaskManager.deleteSubtaskById(Integer.parseInt(params.get("id")));
 
                         response = "Задача " + params.get("id") + " успешно удалена.";
 
@@ -231,7 +251,7 @@ public class HttpTaskServer {
                         }
 
                     } else {
-                        fileBackedTasksManager.removeAllSubtasks();
+                        httpTaskManager.removeAllSubtasks();
 
                         response = "Все Tasks успешно удалены.";
 
@@ -263,14 +283,14 @@ public class HttpTaskServer {
 
                         Map<String, String> params = TaskHandler.queryToMap(exchange.getRequestURI().getQuery());
 
-                        response = gson.toJson(fileBackedTasksManager.getEpicTaskById(Integer.parseInt(params.get("id"))));
+                        response = gson.toJson(httpTaskManager.getEpicTaskById(Integer.parseInt(params.get("id"))));
 
                         exchange.sendResponseHeaders(200, 0);
                         try (OutputStream os = exchange.getResponseBody()) {
                             os.write(response.getBytes());
                         }
                     } else {
-                        response = gson.toJson(fileBackedTasksManager.getAllEpicTasks());
+                        response = gson.toJson(httpTaskManager.getAllEpicTasks());
 
                         exchange.sendResponseHeaders(200, 0);
                         try (OutputStream os = exchange.getResponseBody()) {
@@ -283,10 +303,10 @@ public class HttpTaskServer {
 
                     Epic epic = gson.fromJson(body, Epic.class);
 
-                    if (fileBackedTasksManager.getAllEpicTasks().contains(epic)) {
-                        fileBackedTasksManager.updateEpicTask(epic);
+                    if (httpTaskManager.getAllEpicTasks().contains(epic)) {
+                        httpTaskManager.updateEpicTask(epic);
                     } else {
-                        fileBackedTasksManager.updateEpicTask(epic);
+                        httpTaskManager.createEpic(epic);
                     }
                     response = "Задача успешно добавлена/обновлена";
                     exchange.sendResponseHeaders(200, 0);
@@ -301,7 +321,7 @@ public class HttpTaskServer {
 
                         Map<String, String> params = TaskHandler.queryToMap(exchange.getRequestURI().getQuery());
 
-                        fileBackedTasksManager.deleteEpicTaskById(Integer.parseInt(params.get("id")));
+                        httpTaskManager.deleteEpicTaskById(Integer.parseInt(params.get("id")));
 
                         response = "Задача " + params.get("id") + " успешно удалена.";
 
@@ -311,7 +331,7 @@ public class HttpTaskServer {
                         }
 
                     } else {
-                        fileBackedTasksManager.removeAllEpicTasks();
+                        httpTaskManager.removeAllEpicTasks();
 
                         response = "Все Epics успешно удалены.";
 
@@ -339,7 +359,7 @@ public class HttpTaskServer {
 
             if (pathSplit.length >= 2) {
 
-                response = gson.toJson(fileBackedTasksManager.getHistory());
+                response = gson.toJson(httpTaskManager.getHistory());
 
                 exchange.sendResponseHeaders(200, 0);
                 try (OutputStream os = exchange.getResponseBody()) {

@@ -11,7 +11,7 @@ public class InMemoryTaskManager implements TaskManager {
     private HistoryManager historyManager = Managers.getDefaultHistory();
     protected final LocalDateTimeComparator comparator = new LocalDateTimeComparator();
     protected Set<Task> prioritizedTasks = new TreeSet<>(comparator);
-    Integer id = 0;
+        Integer id = 0;
 
     @Override
     public ArrayList<Task> getAllTasks() {

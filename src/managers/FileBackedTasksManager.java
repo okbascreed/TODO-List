@@ -13,17 +13,12 @@ import java.util.List;
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private File file;
-    private URL url;
 
     public FileBackedTasksManager(File file) {
         this.file = file;
     }
 
-    public FileBackedTasksManager(URL url){
-        this.url = url;
-    }
-
-    private static HistoryManager historyManager = Managers.getDefaultHistory();
+    // private static HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
     public void createEpic(Epic epic) {
