@@ -1,120 +1,122 @@
 package managers;
 
 import com.google.gson.*;
+
+import com.google.gson.reflect.TypeToken;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
+import tasks.TaskType;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import static managers.HttpTaskManager.InterfaceSerializer.interfaceSerializer;
 
-public class HttpTaskManager extends FileBackedTasksManager  {
+public class HttpTaskManager extends FileBackedTasksManager {
 
     private KVTaskClient kvTaskClient;
-    //private static Gson gson = new Gson();
+
+    private HashMap<Integer, Task> tasksList = new HashMap();
+    private HashMap<Integer, Task> epicsList = new HashMap();
+    private HashMap<Integer, Task> subtasksList = new HashMap();
+
+    private LinkedHashMap<Integer, TaskType> history = new LinkedHashMap<>();
 
     Gson gson = new GsonBuilder()
-            .registerTypeAdapter(HistoryManager.class, interfaceSerializer(HttpTaskManager.class))
+            .setPrettyPrinting()
+            .serializeNulls()
             .create();
 
     private URL url;
 
     public HttpTaskManager(URL url) throws IOException, InterruptedException {
-        super(new File ("src/tasks/HttpTaskManagerFile.txt"));
+        super(new File("src/tasks/HttpTaskManagerFile.txt"));
         this.url = url;
         kvTaskClient = new KVTaskClient(url);
     }
 
+    public HttpTaskManager loadFromServer() throws IOException, InterruptedException {
 
-    public HttpTaskManager loadFromServer(String key) throws IOException, InterruptedException {
+        HttpTaskManager httpTaskManager = new HttpTaskManager(url);
 
-        HttpTaskManager httpTaskManager = gson.fromJson(kvTaskClient.load(key), interfaceSerializer(HttpTaskManager.class));
-        if(httpTaskManager == null) {
-            System.out.println("По данному key данные отсутствуют.");
-        }
-        ArrayList<Task> tasks = httpTaskManager.getAllTasks();
-        for (Task task : tasks) {
-            this.addTask(task);
-        }
+        List<Task> loadedTasks = gson.fromJson(kvTaskClient.load("Tasks"), new TypeToken<List<Task>>() {
+        }.getType());
 
-        ArrayList<Epic> epics = httpTaskManager.getAllEpicTasks();
-        for(Epic epic : epics){
-            this.addEpic(epic);
+        for (Task task : loadedTasks) {
+            tasksList.put(task.getId(), task);
         }
 
-        ArrayList<Subtask> subtasks = httpTaskManager.getAllSubTasks();
-        for(Subtask subtask : subtasks){
-            this.addSubtask(subtask);
+        List<Epic> loadedEpics = gson.fromJson(kvTaskClient.load("Epics"), new TypeToken<List<Epic>>() {
+        }.getType());
+
+        for (Epic epic : loadedEpics) {
+            epicsList.put(epic.getId(), epic);
         }
+
+        List<Subtask> loadedSubtasks = gson.fromJson(kvTaskClient.load("SubTasks"), new TypeToken<List<Subtask>>() {
+        }.getType());
+
+        for (Subtask subtask : loadedSubtasks) {
+            epicsList.put(subtask.getId(), subtask);
+        }
+
         return httpTaskManager;
     }
 
-    public void saveToServer(String key) throws IOException, InterruptedException {
-        String jsonString = gson.toJson(this);
-        kvTaskClient.put(key, jsonString);
+    public void saveToServer() throws IOException, InterruptedException {
+        kvTaskClient.put("Tasks", gson.toJson(new ArrayList<>(tasksList.values())));
+        kvTaskClient.put("Epics", gson.toJson(new ArrayList<>(epicsList.values())));
+        kvTaskClient.put("SubTasks", gson.toJson(new ArrayList<>(subtasksList.values())));
+        kvTaskClient.put("History", gson.toJson(new ArrayList<>(history.values())));
     }
-
-    public KVTaskClient getKvTaskClient(){
-        return kvTaskClient;
-    }
-
-    /*public void createTask(Task task) throws IOException, InterruptedException {
-        try {
-            checkTaskIntersection(task);
-        } catch (ManagerIntersectionException e) {
-            System.out.println(e.getMessage());
-            return;
-        }
-        id++;
-        task.setId(id);
-        //this.loadFromServer(key);
-        this.addTask(task);
-        this.prioritizedTasks.add(task);
-        saveToServer(key);
-    }*/
-
 
     @Override
-    public String toString() {
-        return "HttpTaskManager{}";
+    public void createTask(Task task) {
+        super.createTask(task);
+        tasksList.put(task.getId(), task);
     }
 
+    @Override
+    public void createEpic(Epic epic) {
+        super.createEpic(epic);
+        epicsList.put(epic.getId(), epic);
+    }
 
-      static final class InterfaceSerializer<HttpTaskManager>
-            implements JsonSerializer<HttpTaskManager>, JsonDeserializer<HttpTaskManager> {
+    @Override
+    public void createSubtask(Subtask subtask) {
+        super.createSubtask(subtask);
+        subtasksList.put(subtask.getId(), subtask);
+    }
 
-        private final Class<HttpTaskManager> implementationClass;
+    @Override
+    public Task getTaskById(int id){
+        Task task = tasksList.get(id);
+        history.put(task.getId(), task.getType());
+        return task;
+    }
 
-        private InterfaceSerializer(final Class<HttpTaskManager> implementationClass) {
-            this.implementationClass = implementationClass;
-        }
+    @Override
+    public void deleteTaskById(int id){
+        tasksList.remove(id);
+        history.remove(id);
+    }
 
-         static <HttpTaskManager> Type interfaceSerializer(final Class<HttpTaskManager> implementationClass) {
-            return new InterfaceSerializer<>(implementationClass).getClass();
-        }
-
-        @Override
-        public JsonElement serialize(final HttpTaskManager value, final Type type, final JsonSerializationContext context) {
-            final Type targetType = value != null
-                    ? value.getClass()
-                    : type;
-            return context.serialize(value, targetType);
-        }
-
-        @Override
-        public HttpTaskManager deserialize(final JsonElement jsonElement, final Type typeOfT, final JsonDeserializationContext context) {
-            return context.deserialize(jsonElement, implementationClass);
-        }
-
+    @Override
+    public ArrayList<Task> getAllTasks(){
+        return new ArrayList<>(tasksList.values());
     }
 
 
 }
+
+
+
 
 
 

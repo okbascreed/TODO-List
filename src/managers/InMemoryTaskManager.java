@@ -1,14 +1,18 @@
 package managers;
 
+import com.google.gson.annotations.SerializedName;
 import tasks.*;
 
+import java.beans.Transient;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Epic> epicTasks = new HashMap<>();
     private HashMap<Integer, Subtask> subtasks = new HashMap<>();
     private HashMap<Integer, Task> tasks = new HashMap<>();
-    private HistoryManager historyManager = Managers.getDefaultHistory();
+
+    @SerializedName("InMemoryHistory")
+    private transient HistoryManager historyManager = Managers.getDefaultHistory();
     protected final LocalDateTimeComparator comparator = new LocalDateTimeComparator();
     protected Set<Task> prioritizedTasks = new TreeSet<>(comparator);
         Integer id = 0;

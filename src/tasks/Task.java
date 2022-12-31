@@ -80,6 +80,9 @@ public class Task {
         this.startTime = startTime;
     }
 
+    public TaskType getType() {
+        return type;
+    }
 
     @Override
     public String toString() {

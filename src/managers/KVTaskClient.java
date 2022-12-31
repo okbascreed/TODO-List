@@ -1,9 +1,5 @@
 package managers;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonElement;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -23,7 +19,6 @@ public class KVTaskClient {
     }
 
     public void put(String key, String json) throws IOException, InterruptedException {
-        System.out.println(json);
         URI uri = URI.create(url.toString() + "/save/" + key + "?" + "API_TOKEN=" + apiToken);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
@@ -33,24 +28,18 @@ public class KVTaskClient {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
-    public static String load(String key) throws IOException, InterruptedException {
+    public static String load(String key) {
         URI uri = URI.create(url.toString() + "/load/" + key + "?" + "API_TOKEN=" + apiToken);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .GET()
                 .build();
-        //HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         String httpTaskManager = "";
 
         try {
             final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
             if (response.statusCode() == 200) {
                 httpTaskManager = response.body();
-               /*JsonElement jsonElement = JsonParser.parseString(response.body());
-                JsonObject jsonObject = jsonElement.getAsJsonObject();
-                JsonObject managerObject = jsonObject.get(key).getAsJsonObject();
-                httpTaskManager = managerObject.get(key).getAsString();*/
             } else {
                 System.out.println("Что-то пошло не так. Сервер вернул код состояния: " + response.statusCode());
             }

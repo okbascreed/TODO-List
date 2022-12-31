@@ -1,7 +1,9 @@
 package managers;
 
+import com.google.gson.annotations.SerializedName;
 import tasks.*;
 
+import java.beans.Transient;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
@@ -18,7 +20,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         this.file = file;
     }
 
-    // private static HistoryManager historyManager = Managers.getDefaultHistory();
+    @SerializedName("FileBackedHistory")
+    private static transient HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
     public void createEpic(Epic epic) {

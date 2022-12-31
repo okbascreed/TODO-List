@@ -78,7 +78,6 @@ public class KVServer {
                     return;
                 }
                 data.put(key, value);
-                System.out.println("Значение для ключа " + key + " успешно обновлено!");
                 h.sendResponseHeaders(200, 0);
             } else {
                 System.out.println("/save ждёт POST-запрос, а получил: " + h.getRequestMethod());

@@ -1,24 +1,15 @@
-import com.google.gson.Gson;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
+
 import managers.*;
 import tasks.*;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
 public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        KVServer kvServer = new KVServer();
+        /*KVServer kvServer = new KVServer();
         kvServer.start();
         HttpTaskServer httpTaskServer = new HttpTaskServer();
         httpTaskServer.startHttpServer();
@@ -32,21 +23,21 @@ public class Main {
                 80, LocalDateTime.of(2023, 1, 1, 10, 0));
         Task task3 = new Task(3, TaskType.TASK, "test3", Status.NEW, "test3 des",
                 40, null);
+
         httpTaskManager.createTask(task1);
         httpTaskManager.createTask(task2);
         httpTaskManager.createTask(task3);
 
-        httpTaskManager.saveToServer("test_1");
-      //  httpTaskManager = httpTaskManager.loadFromServer("test_1");
+        httpTaskManager.getTaskById(2);
+
+        httpTaskManager.saveToServer();
 
         httpTaskServer.stopHttpServer();
 
         httpTaskServer.startHttpServer();
 
-        httpTaskManager.loadFromServer("test_1");
-
-
-
+        System.out.println(httpTaskManager.getAllTasks());
+*/
 
 
        /* new KVServer().start();
@@ -101,56 +92,5 @@ public class Main {
             System.out.println(task);
         }*/
     }
-
-
-  /*  static class TasksHandler implements HttpHandler {
-
-        FileBackedTasksManager fileBackedTasksManager = FileBackedTasksManager.loadFromFile(new File("src/tasks/TasksHandlerFile.txt"));
-
-
-        private static Gson gson = new Gson();
-
-        @Override
-        public void handle(HttpExchange exchange) throws IOException {
-
-            String response = "";
-            String method = exchange.getRequestMethod();
-            InputStream inputStream = exchange.getRequestBody();
-            String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-            String path = exchange.getRequestURI().getPath();
-            String[] pathSplit = path.split("/");
-
-
-            switch(method) {
-                case("GET"):
-                    if(pathSplit.length > 2){
-                        int taskId = Integer.parseInt(pathSplit[2]);
-                        response = gson.toJson(fileBackedTasksManager.getTaskById(taskId));
-
-                        exchange.sendResponseHeaders(200,0);
-                        try(OutputStream os = exchange.getResponseBody()){
-                            os.write(response.getBytes());
-                        }
-
-
-
-                    } else {
-                        response = gson.toJson(fileBackedTasksManager.getAllTasks());
-
-                        exchange.sendResponseHeaders(200,0);
-                        try(OutputStream os = exchange.getResponseBody()){
-                            os.write(response.getBytes());
-                        }
-
-
-
-                    }
-            }
-
-
-        }
-
-
-    }*/
 
 }

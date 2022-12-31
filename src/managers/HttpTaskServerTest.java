@@ -25,17 +25,13 @@ class HttpTaskServerTest {
 
     HttpTaskManager httpTaskManager;
 
-    HttpTaskServerTest() throws IOException, InterruptedException {
-    }
-
-
     @BeforeEach
-    void serversStart() throws IOException, InterruptedException {
+    void serversStart() throws IOException {
         kvServer = new KVServer();
         kvServer.start();
         httpTaskServer = new HttpTaskServer();
         httpTaskServer.startHttpServer();
-        httpTaskManager = new HttpTaskManager(new URL("http://localhost:8078"));
+        httpTaskManager = httpTaskServer.getHttpTaskManager();
     }
     @AfterEach
     void serversStop(){
@@ -51,18 +47,18 @@ class HttpTaskServerTest {
                 80, LocalDateTime.of(2023, 1, 1, 10, 0));
         Task task3 = new Task(3, TaskType.TASK, "test3", Status.NEW, "test3 des",
                 40, null);
+
+
         httpTaskManager.createTask(task1);
         httpTaskManager.createTask(task2);
         httpTaskManager.createTask(task3);
 
-        httpTaskManager.saveToServer("test_1");
 
 
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/tasks/task/");
+        URI url = URI.create("http://localhost:8080/tasks/task");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        httpTaskManager.loadFromServer("test_1");
 
         assertEquals(httpTaskManager.getAllTasks(), response);
 
@@ -73,7 +69,5 @@ class HttpTaskServerTest {
 
 
 
-    @Test
-    void startHttpServer() {
-    }
+
 }
