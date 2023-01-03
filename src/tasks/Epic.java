@@ -11,13 +11,10 @@ public class Epic extends Task {
 
     private ArrayList<Subtask> subtasks = new ArrayList<>();
 
-    @SerializedName("Epic.duration")
     private int duration;
 
-    @SerializedName("Epic.startTime")
     private LocalDateTime startTime;
 
-    @SerializedName("Epic.endTime")
     private LocalDateTime endTime;
 
     public Epic(String name, String description) {
