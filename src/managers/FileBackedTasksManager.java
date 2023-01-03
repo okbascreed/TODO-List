@@ -20,7 +20,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         this.file = file;
     }
 
-    @SerializedName("FileBackedHistory")
     private static transient HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override

@@ -23,7 +23,7 @@ public class HttpTaskServer {
     private HttpServer httpServer;
     static HttpTaskManager httpTaskManager;
 
-    static {
+     {
         try {
             httpTaskManager = new HttpTaskManager(new URL("http://localhost:8078"));
         } catch (IOException e) {
@@ -58,26 +58,18 @@ public class HttpTaskServer {
         httpServer.stop(0);
     }
 
-
-
-
     static class TasksHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange exchange) throws IOException {
 
-            String response = "";
-            String method = exchange.getRequestMethod();
-            InputStream inputStream = exchange.getRequestBody();
-            String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-            String path = exchange.getRequestURI().getPath();
-            String[] pathSplit = path.split("/");
+
 
 
             Set<Task> tasks = httpTaskManager.getPrioritizedTasks();
 
 
-            response = gson.toJson(tasks);
+            String response = gson.toJson(tasks);
 
 
             exchange.sendResponseHeaders(200, 0);
@@ -113,15 +105,14 @@ public class HttpTaskServer {
             String method = exchange.getRequestMethod();
             InputStream inputStream = exchange.getRequestBody();
             String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-            String path = exchange.getRequestURI().getPath();
-            String[] pathSplit = path.split("/");
+            String query = exchange.getRequestURI().getQuery();
 
 
             switch (method) {
                 case ("GET"):
-                    if (pathSplit.length >= 2) {
+                    if (query !=null) {
 
-                        Map<String, String> params = queryToMap(exchange.getRequestURI().getQuery());
+                        Map<String, String> params = queryToMap(query);
 
                         response = gson.toJson(httpTaskManager.getTaskById(Integer.parseInt(params.get("id"))));
 
@@ -157,7 +148,7 @@ public class HttpTaskServer {
 
                 case ("DELETE"):
 
-                    if (pathSplit.length >= 2) {
+                    if (query !=null) {
 
                         Map<String, String> params = queryToMap(exchange.getRequestURI().getQuery());
 
@@ -193,15 +184,14 @@ public class HttpTaskServer {
             String method = exchange.getRequestMethod();
             InputStream inputStream = exchange.getRequestBody();
             String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-            String path = exchange.getRequestURI().getPath();
-            String[] pathSplit = path.split("/");
+            String query = exchange.getRequestURI().getQuery();
 
 
             switch (method) {
                 case ("GET"):
-                    if (pathSplit.length >= 2) {
+                    if (query != null) {
 
-                        Map<String, String> params = TaskHandler.queryToMap(exchange.getRequestURI().getQuery());
+                        Map<String, String> params = TaskHandler.queryToMap(query);
 
                         response = gson.toJson(httpTaskManager.getSubtaskById(Integer.parseInt(params.get("id"))));
 
@@ -237,7 +227,7 @@ public class HttpTaskServer {
 
                 case ("DELETE"):
 
-                    if (pathSplit.length >= 2) {
+                    if (query != null) {
 
                         Map<String, String> params = TaskHandler.queryToMap(exchange.getRequestURI().getQuery());
 
@@ -273,15 +263,13 @@ public class HttpTaskServer {
             String method = exchange.getRequestMethod();
             InputStream inputStream = exchange.getRequestBody();
             String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-            String path = exchange.getRequestURI().getPath();
-            String[] pathSplit = path.split("/");
-
+            String query = exchange.getRequestURI().getQuery();
 
             switch (method) {
                 case ("GET"):
-                    if (pathSplit.length >= 2) {
+                    if (query != null) {
 
-                        Map<String, String> params = TaskHandler.queryToMap(exchange.getRequestURI().getQuery());
+                        Map<String, String> params = TaskHandler.queryToMap(query);
 
                         response = gson.toJson(httpTaskManager.getEpicTaskById(Integer.parseInt(params.get("id"))));
 
@@ -317,7 +305,7 @@ public class HttpTaskServer {
 
                 case ("DELETE"):
 
-                    if (pathSplit.length >= 2) {
+                    if (query != null) {
 
                         Map<String, String> params = TaskHandler.queryToMap(exchange.getRequestURI().getQuery());
 
@@ -349,23 +337,14 @@ public class HttpTaskServer {
 
         @Override
         public void handle(HttpExchange exchange) throws IOException {
-            String response = "";
-            //String method = exchange.getRequestMethod();
-            //InputStream inputStream = exchange.getRequestBody();
-           // String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-            String path = exchange.getRequestURI().getPath();
-            String[] pathSplit = path.split("/");
 
-
-            if (pathSplit.length >= 2) {
-
-                response = gson.toJson(httpTaskManager.getHistory());
+              String response = gson.toJson(httpTaskManager.getHistory());
 
                 exchange.sendResponseHeaders(200, 0);
                 try (OutputStream os = exchange.getResponseBody()) {
                     os.write(response.getBytes());
                 }
-            }
+
         }
     }
 }

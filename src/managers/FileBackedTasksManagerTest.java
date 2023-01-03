@@ -34,7 +34,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     }
 
     @Test
-    void save() throws ManagerSaveException {
+    void save(){
         initTasks();
 
         List<String> result = new ArrayList<>();

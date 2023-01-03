@@ -6,7 +6,6 @@ import com.google.gson.reflect.TypeToken;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
-import tasks.TaskType;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class HttpTaskManager extends FileBackedTasksManager {
@@ -23,10 +21,10 @@ public class HttpTaskManager extends FileBackedTasksManager {
     private KVTaskClient kvTaskClient;
 
     private HashMap<Integer, Task> tasksList = new HashMap();
-    private HashMap<Integer, Task> epicsList = new HashMap();
-    private HashMap<Integer, Task> subtasksList = new HashMap();
+    private HashMap<Integer, Epic> epicsList = new HashMap();
+    private HashMap<Integer, Subtask> subtasksList = new HashMap();
 
-    private LinkedHashMap<Integer, TaskType> history = new LinkedHashMap<>();
+    private LinkedHashMap<Integer, Task> history = new LinkedHashMap<>();
 
     Gson gson = new GsonBuilder()
             .setPrettyPrinting()
@@ -43,7 +41,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
     public HttpTaskManager loadFromServer() throws IOException, InterruptedException {
 
-        HttpTaskManager httpTaskManager = new HttpTaskManager(url);
+        HttpTaskManager httpTaskManager = this;
 
         List<Task> loadedTasks = gson.fromJson(kvTaskClient.load("Tasks"), new TypeToken<List<Task>>() {
         }.getType());
@@ -63,7 +61,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
         }.getType());
 
         for (Subtask subtask : loadedSubtasks) {
-            epicsList.put(subtask.getId(), subtask);
+            subtasksList.put(subtask.getId(), subtask);
         }
 
         return httpTaskManager;
@@ -97,7 +95,9 @@ public class HttpTaskManager extends FileBackedTasksManager {
     @Override
     public Task getTaskById(int id){
         Task task = tasksList.get(id);
-        history.put(task.getId(), task.getType());
+        if(task != null){
+            history.put(task.getId(), task);
+        }
         return task;
     }
 
@@ -109,9 +109,65 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
     @Override
     public ArrayList<Task> getAllTasks(){
+        super.getAllTasks();
         return new ArrayList<>(tasksList.values());
     }
 
+    @Override
+    public void removeAllTasks(){
+        tasksList.clear();
+    }
+
+    @Override
+    public ArrayList<Subtask> getAllSubTasks(){
+        return new ArrayList<>(subtasksList.values());
+    }
+
+    @Override
+    public void removeAllSubtasks(){
+        subtasksList.clear();
+    }
+
+    @Override
+    public Subtask getSubtaskById(int id){
+        Subtask subtask = subtasksList.get(id);
+        history.put(subtask.getId(), subtask);
+        return subtask;
+    }
+
+    @Override
+    public void deleteSubtaskById(int id){
+        subtasksList.remove(id);
+        history.remove(id);
+    }
+
+    @Override
+    public ArrayList<Epic> getAllEpicTasks(){
+        return new ArrayList<>(epicsList.values());
+    }
+
+    @Override
+    public void removeAllEpicTasks(){
+        epicsList.clear();
+    }
+
+    @Override
+    public Task getEpicTaskById(int id){
+        Epic epic = epicsList.get(id);
+        history.put(epic.getId(), epic);
+        return epic;
+    }
+
+    @Override
+    public void deleteEpicTaskById(int id){
+        epicsList.remove(id);
+        history.remove(id);
+    }
+
+    @Override
+    public List<Task> getHistory(){
+        return new ArrayList<>(history.values());
+    }
 
 }
 

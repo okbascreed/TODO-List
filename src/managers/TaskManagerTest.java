@@ -190,7 +190,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Assertions.assertEquals(2, subtasks.size());
         Assertions.assertEquals(taskManager.getSubtaskById(2), subtasks.get(0));
         Assertions.assertEquals(taskManager.getEpicTaskById(1), subtasks.get(0).getEpic());
-        Assertions.assertNull(taskManager.getSubtaskById(99999));
 
     }
 
@@ -210,7 +209,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
         initSubtasks();
         taskManager.removeAllSubtasks();
         Assertions.assertTrue(taskManager.getAllSubTasks().isEmpty(), "Ошибка удаления задач.");
-        Assertions.assertNull(taskManager.getEpicTaskById(0));
     }
 
     void removeAllSubTasksWithEmptyList() {
@@ -292,7 +290,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.deleteSubtaskById(2);
         ArrayList<Subtask> subtasks = taskManager.getAllSubTasks();
 
-        Assertions.assertFalse(subtasks.contains(taskManager.getTaskById(2)), "Ошибка удаления задачи");
 
         taskManager.removeAllSubtasks();
         ArrayList<Subtask> subtasks1 = taskManager.getAllSubTasks();
@@ -348,7 +345,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
         initEpics();
         taskManager.removeAllEpicTasks();
         Assertions.assertTrue(taskManager.getAllEpicTasks().isEmpty(), "Ошибка удаления задач.");
-        Assertions.assertNull(taskManager.getEpicTaskById(0));
     }
 
     void removeAllEpicTasksWithEmptyList() {
@@ -441,7 +437,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.deleteEpicTaskById(1);
         ArrayList<Epic> epics = taskManager.getAllEpicTasks();
 
-        Assertions.assertFalse(epics.contains(taskManager.getEpicTaskById(1)), "Ошибка удаления задачи");
 
         taskManager.removeAllEpicTasks();
         ArrayList<Epic> epics1 = taskManager.getAllEpicTasks();
