@@ -1,7 +1,9 @@
-package managers;
+package Tests;
 
 import org.junit.jupiter.api.Assertions;
-import tasks.*;
+import ru.yandex.praktikum.managers.ManagerIntersectionException;
+import ru.yandex.praktikum.managers.TaskManager;
+import ru.yandex.praktikum.tasks.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -112,13 +114,13 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void removeAllTasks() {
         initTasks();
         taskManager.removeAllTasks();
-        Assertions.assertTrue(taskManager.getAllTasks().isEmpty(), "Ошибка удаления задач.");
+        assertTrue(taskManager.getAllTasks().isEmpty(), "Ошибка удаления задач.");
 
     }
 
     void removeAllTasksWithEmptyList() {
         taskManager.removeAllTasks();
-        Assertions.assertTrue(taskManager.getAllTasks().isEmpty(), "Ошибка удаления задач.");
+        assertTrue(taskManager.getAllTasks().isEmpty(), "Ошибка удаления задач.");
     }
 
     void removeAllTasksWithBadId() {
@@ -194,7 +196,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     void getAllSubtasksWithEmptyList() {
-        Assertions.assertTrue(taskManager.getAllTasks().isEmpty(), "Ошибка удаления задач.");
+        assertTrue(taskManager.getAllTasks().isEmpty(), "Ошибка удаления задач.");
     }
 
     void getAllSubtasksWithBadId() {
@@ -208,12 +210,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void removeAllSubtasks() {
         initSubtasks();
         taskManager.removeAllSubtasks();
-        Assertions.assertTrue(taskManager.getAllSubTasks().isEmpty(), "Ошибка удаления задач.");
+        assertTrue(taskManager.getAllSubTasks().isEmpty(), "Ошибка удаления задач.");
     }
 
     void removeAllSubTasksWithEmptyList() {
         taskManager.removeAllSubtasks();
-        Assertions.assertTrue(taskManager.getAllSubTasks().isEmpty(), "Ошибка удаления задач.");
+        assertTrue(taskManager.getAllSubTasks().isEmpty(), "Ошибка удаления задач.");
         Assertions.assertNull(taskManager.getEpicTaskById(0));
     }
 
@@ -344,12 +346,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void removeAllEpicTasks() {
         initEpics();
         taskManager.removeAllEpicTasks();
-        Assertions.assertTrue(taskManager.getAllEpicTasks().isEmpty(), "Ошибка удаления задач.");
+        assertTrue(taskManager.getAllEpicTasks().isEmpty(), "Ошибка удаления задач.");
     }
 
     void removeAllEpicTasksWithEmptyList() {
         taskManager.removeAllEpicTasks();
-        Assertions.assertTrue(taskManager.getAllEpicTasks().isEmpty(), "Ошибка удаления задач.");
+        assertTrue(taskManager.getAllEpicTasks().isEmpty(), "Ошибка удаления задач.");
         Assertions.assertNull(taskManager.getEpicTaskById(0));
     }
 

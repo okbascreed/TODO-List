@@ -1,6 +1,6 @@
-package managers;
+package ru.yandex.praktikum.managers;
 
-import tasks.Task;
+import ru.yandex.praktikum.tasks.Task;
 
 public class Node {
 

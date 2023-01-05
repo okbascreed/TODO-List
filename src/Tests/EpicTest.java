@@ -1,7 +1,10 @@
-package tasks;
+package Tests;
 
-import managers.InMemoryTaskManager;
 import org.junit.jupiter.api.*;
+import ru.yandex.praktikum.tasks.Epic;
+import ru.yandex.praktikum.tasks.Status;
+import ru.yandex.praktikum.tasks.Subtask;
+import ru.yandex.praktikum.tasks.TaskType;
 
 
 class EpicTest {

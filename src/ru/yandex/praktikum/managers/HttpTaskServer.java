@@ -1,12 +1,12 @@
-package managers;
+package ru.yandex.praktikum.managers;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Task;
+import ru.yandex.praktikum.tasks.Epic;
+import ru.yandex.praktikum.tasks.Subtask;
+import ru.yandex.praktikum.tasks.Task;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -23,17 +23,15 @@ public class HttpTaskServer {
     private HttpServer httpServer;
     static HttpTaskManager httpTaskManager;
 
-     {
+    {
         try {
             httpTaskManager = new HttpTaskManager(new URL("http://localhost:8078"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public HttpTaskManager getHttpTaskManager(){
+    public HttpTaskManager getHttpTaskManager() {
         return httpTaskManager;
     }
 
@@ -54,7 +52,7 @@ public class HttpTaskServer {
         System.out.println("Сервер запущен");
     }
 
-    public void stopHttpServer(){
+    public void stopHttpServer() {
         httpServer.stop(0);
     }
 
@@ -63,29 +61,21 @@ public class HttpTaskServer {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
 
-
-
-
             Set<Task> tasks = httpTaskManager.getPrioritizedTasks();
-
-
             String response = gson.toJson(tasks);
-
 
             exchange.sendResponseHeaders(200, 0);
             try (OutputStream os = exchange.getResponseBody()) {
                 os.write(response.getBytes());
             }
-
         }
-
     }
 
     static class TaskHandler implements HttpHandler {
 
         protected static Map<String, String> queryToMap(String query) {
             if (query == null) {
-                return null;
+                return new HashMap<>();
             }
             Map<String, String> result = new HashMap<>();
             for (String param : query.split("&")) {
@@ -110,7 +100,7 @@ public class HttpTaskServer {
 
             switch (method) {
                 case ("GET"):
-                    if (query !=null) {
+                    if (query != null) {
 
                         Map<String, String> params = queryToMap(query);
 
@@ -133,7 +123,6 @@ public class HttpTaskServer {
                 case ("POST"):
 
                     Task task = gson.fromJson(body, Task.class);
-
                     if (httpTaskManager.getAllTasks().contains(task)) {
                         httpTaskManager.updateTask(task);
                     } else {
@@ -148,19 +137,15 @@ public class HttpTaskServer {
 
                 case ("DELETE"):
 
-                    if (query !=null) {
-
+                    if (query != null) {
                         Map<String, String> params = queryToMap(exchange.getRequestURI().getQuery());
-
                         httpTaskManager.deleteTaskById(Integer.parseInt(params.get("id")));
-
                         response = "Задача " + params.get("id") + " успешно удалена.";
 
                         exchange.sendResponseHeaders(200, 0);
                         try (OutputStream os = exchange.getResponseBody()) {
                             os.write(response.getBytes());
                         }
-
                     } else {
                         httpTaskManager.removeAllTasks();
 
@@ -172,6 +157,9 @@ public class HttpTaskServer {
                         }
                     }
                     break;
+                default: {
+                    System.out.println("Ждали GET/DELETE/POST запрос, а получили -" + method);
+                }
             }
         }
     }
@@ -192,9 +180,7 @@ public class HttpTaskServer {
                     if (query != null) {
 
                         Map<String, String> params = TaskHandler.queryToMap(query);
-
                         response = gson.toJson(httpTaskManager.getSubtaskById(Integer.parseInt(params.get("id"))));
-
                         exchange.sendResponseHeaders(200, 0);
                         try (OutputStream os = exchange.getResponseBody()) {
                             os.write(response.getBytes());
@@ -212,7 +198,6 @@ public class HttpTaskServer {
                 case ("POST"):
 
                     Subtask subtask = gson.fromJson(body, Subtask.class);
-
                     if (httpTaskManager.getAllSubTasks().contains(subtask)) {
                         httpTaskManager.updateSubtask(subtask);
                     } else {
@@ -230,11 +215,8 @@ public class HttpTaskServer {
                     if (query != null) {
 
                         Map<String, String> params = TaskHandler.queryToMap(exchange.getRequestURI().getQuery());
-
                         httpTaskManager.deleteSubtaskById(Integer.parseInt(params.get("id")));
-
                         response = "Задача " + params.get("id") + " успешно удалена.";
-
                         exchange.sendResponseHeaders(200, 0);
                         try (OutputStream os = exchange.getResponseBody()) {
                             os.write(response.getBytes());
@@ -242,15 +224,16 @@ public class HttpTaskServer {
 
                     } else {
                         httpTaskManager.removeAllSubtasks();
-
                         response = "Все Tasks успешно удалены.";
-
                         exchange.sendResponseHeaders(200, 0);
                         try (OutputStream os = exchange.getResponseBody()) {
                             os.write(response.getBytes());
                         }
                     }
                     break;
+                default: {
+                    System.out.println("Ждали GET/DELETE/POST запрос, а получили -" + method);
+                }
             }
         }
     }
@@ -270,16 +253,13 @@ public class HttpTaskServer {
                     if (query != null) {
 
                         Map<String, String> params = TaskHandler.queryToMap(query);
-
                         response = gson.toJson(httpTaskManager.getEpicTaskById(Integer.parseInt(params.get("id"))));
-
                         exchange.sendResponseHeaders(200, 0);
                         try (OutputStream os = exchange.getResponseBody()) {
                             os.write(response.getBytes());
                         }
                     } else {
                         response = gson.toJson(httpTaskManager.getAllEpicTasks());
-
                         exchange.sendResponseHeaders(200, 0);
                         try (OutputStream os = exchange.getResponseBody()) {
                             os.write(response.getBytes());
@@ -306,13 +286,9 @@ public class HttpTaskServer {
                 case ("DELETE"):
 
                     if (query != null) {
-
                         Map<String, String> params = TaskHandler.queryToMap(exchange.getRequestURI().getQuery());
-
                         httpTaskManager.deleteEpicTaskById(Integer.parseInt(params.get("id")));
-
                         response = "Задача " + params.get("id") + " успешно удалена.";
-
                         exchange.sendResponseHeaders(200, 0);
                         try (OutputStream os = exchange.getResponseBody()) {
                             os.write(response.getBytes());
@@ -329,6 +305,9 @@ public class HttpTaskServer {
                         }
                     }
                     break;
+                default: {
+                    System.out.println("Ждали GET/DELETE/POST запрос, а получили -" + method);
+                }
             }
         }
     }
@@ -338,13 +317,11 @@ public class HttpTaskServer {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
 
-              String response = gson.toJson(httpTaskManager.getHistory());
-
-                exchange.sendResponseHeaders(200, 0);
-                try (OutputStream os = exchange.getResponseBody()) {
-                    os.write(response.getBytes());
-                }
-
+            String response = gson.toJson(httpTaskManager.getHistory());
+            exchange.sendResponseHeaders(200, 0);
+            try (OutputStream os = exchange.getResponseBody()) {
+                os.write(response.getBytes());
+            }
         }
     }
 }

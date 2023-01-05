@@ -1,9 +1,14 @@
 
-package managers;
+package Tests;
 
+import Tests.TaskManagerTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tasks.*;
+import ru.yandex.praktikum.managers.FileBackedTasksManager;
+import ru.yandex.praktikum.tasks.Epic;
+import ru.yandex.praktikum.tasks.Status;
+import ru.yandex.praktikum.tasks.Task;
+import ru.yandex.praktikum.tasks.TaskType;
 
 import java.io.*;
 import java.nio.file.Files;

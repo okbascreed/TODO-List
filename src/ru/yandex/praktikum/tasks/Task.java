@@ -1,4 +1,4 @@
-package tasks;
+package ru.yandex.praktikum.tasks;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

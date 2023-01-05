@@ -1,6 +1,9 @@
-package managers;
+package ru.yandex.praktikum.managers;
 
-import tasks.*;
+import ru.yandex.praktikum.tasks.Epic;
+import ru.yandex.praktikum.tasks.Status;
+import ru.yandex.praktikum.tasks.Subtask;
+import ru.yandex.praktikum.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;

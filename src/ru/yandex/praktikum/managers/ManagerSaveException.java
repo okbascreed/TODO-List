@@ -1,4 +1,4 @@
-package managers;
+package ru.yandex.praktikum.managers;
 
 import java.io.IOException;
 

@@ -1,11 +1,11 @@
-package managers;
+package ru.yandex.praktikum.managers;
 
 import com.google.gson.*;
 
 import com.google.gson.reflect.TypeToken;
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Task;
+import ru.yandex.praktikum.tasks.Epic;
+import ru.yandex.praktikum.tasks.Subtask;
+import ru.yandex.praktikum.tasks.Task;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
     private URL url;
 
     public HttpTaskManager(URL url) throws IOException, InterruptedException {
-        super(new File("src/tasks/HttpTaskManagerFile.txt"));
+        super(new File("src/HttpTaskManagerFile.txt"));
         this.url = url;
         kvTaskClient = new KVTaskClient(url);
     }

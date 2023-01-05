@@ -1,7 +1,6 @@
-package managers;
+package ru.yandex.praktikum.managers;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class Managers {

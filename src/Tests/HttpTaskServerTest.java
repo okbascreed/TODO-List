@@ -1,13 +1,15 @@
-package managers;
+package Tests;
 
 import com.google.gson.Gson;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tasks.*;
+import ru.yandex.praktikum.managers.HttpTaskManager;
+import ru.yandex.praktikum.managers.HttpTaskServer;
+import ru.yandex.praktikum.managers.KVServer;
+import ru.yandex.praktikum.tasks.*;
 
 import java.io.IOException;
-
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -166,7 +168,7 @@ class HttpTaskServerTest {
     }
 
     @Test
-    void TaskPostEndpointHandlerTest()throws IOException, InterruptedException{
+    void TaskPostEndpointHandlerTest() throws IOException, InterruptedException {
         Task task1 = new Task(1, TaskType.TASK, "test1", Status.NEW, "test1 des",
                 60, LocalDateTime.of(2023, 1, 1, 12, 0));
 
@@ -195,7 +197,7 @@ class HttpTaskServerTest {
         Subtask subtask3 = new Subtask(2, TaskType.TASK, "test2", Status.NEW, "test2 des", epic1,
                 80, LocalDateTime.of(2024, 3, 1, 10, 0));
 
-         httpTaskManager.createEpic(epic1);
+        httpTaskManager.createEpic(epic1);
 
         httpTaskManager.createSubtask(subtask1);
         httpTaskManager.createSubtask(subtask2);
@@ -243,7 +245,7 @@ class HttpTaskServerTest {
     }
 
     @Test
-    void SubtaskPostEndpointHandlerTest()throws IOException, InterruptedException{
+    void SubtaskPostEndpointHandlerTest() throws IOException, InterruptedException {
         Epic epic1 = new Epic(1, TaskType.EPIC, "epic 1", Status.NEW, "epic1 test");
 
         Subtask subtask1 = new Subtask(1, TaskType.SUBTASK, "subtask1", Status.NEW, "subtask1 test",
@@ -417,7 +419,7 @@ class HttpTaskServerTest {
     }
 
     @Test
-    void EpicPostEndpointHandlerTest()throws IOException, InterruptedException{
+    void EpicPostEndpointHandlerTest() throws IOException, InterruptedException {
         Epic epic1 = new Epic("epic1", "epic1 descrp", Status.NEW);
 
         Gson gson = new Gson();
@@ -435,7 +437,7 @@ class HttpTaskServerTest {
 
 
     @Test
-    void HistoryEndpointHandlerTest() throws IOException, InterruptedException{
+    void HistoryEndpointHandlerTest() throws IOException, InterruptedException {
         Task task1 = new Task(1, TaskType.TASK, "test1", Status.NEW, "test1 des",
                 60, LocalDateTime.of(2023, 1, 1, 12, 0));
         Task task2 = new Task(2, TaskType.TASK, "test2", Status.NEW, "test2 des",
@@ -444,14 +446,12 @@ class HttpTaskServerTest {
                 40, null);
 
 
-
         httpTaskManager.createTask(task1);
         httpTaskManager.createTask(task2);
         httpTaskManager.createTask(task3);
 
 
         httpTaskManager.getTaskById(3);
-
 
 
         Gson gson = new Gson();
@@ -465,13 +465,7 @@ class HttpTaskServerTest {
         assertEquals(200, response.statusCode());
 
 
-
     }
-
-
-
-
-
 
 
 }

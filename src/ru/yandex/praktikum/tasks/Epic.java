@@ -1,8 +1,7 @@
-package tasks;
+package ru.yandex.praktikum.tasks;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.beans.Transient;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -11,10 +10,13 @@ public class Epic extends Task {
 
     private ArrayList<Subtask> subtasks = new ArrayList<>();
 
+    @SerializedName("Epic Duration")
     private int duration;
 
+    @SerializedName("Epic StartTime")
     private LocalDateTime startTime;
 
+    @SerializedName("Epic EndTime")
     private LocalDateTime endTime;
 
     public Epic(String name, String description) {

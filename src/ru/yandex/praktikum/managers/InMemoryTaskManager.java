@@ -1,9 +1,7 @@
-package managers;
+package ru.yandex.praktikum.managers;
 
-import com.google.gson.annotations.SerializedName;
-import tasks.*;
+import ru.yandex.praktikum.tasks.*;
 
-import java.beans.Transient;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -72,9 +70,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTaskById(int id) {
 
-        if (historyManager.getHistory().contains(id)) {
-            historyManager.remove(id);
-        }
+       if(historyManager.getHistory().stream().filter(x -> x.getId() == id).findAny().isPresent()){
+           historyManager.remove(id);
+       }
         if (tasks.get(id) != null) {
             prioritizedTasks.remove(tasks.get(id));
         }

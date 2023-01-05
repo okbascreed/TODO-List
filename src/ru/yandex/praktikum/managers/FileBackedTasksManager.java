@@ -1,11 +1,8 @@
-package managers;
+package ru.yandex.praktikum.managers;
 
-import com.google.gson.annotations.SerializedName;
-import tasks.*;
+import ru.yandex.praktikum.tasks.*;
 
-import java.beans.Transient;
 import java.io.*;
-import java.net.URL;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,7 +17,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         this.file = file;
     }
 
-    private static transient HistoryManager historyManager = Managers.getDefaultHistory();
+    private static HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
     public void createEpic(Epic epic) {

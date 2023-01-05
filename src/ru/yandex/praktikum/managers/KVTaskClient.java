@@ -1,4 +1,4 @@
-package managers;
+package ru.yandex.praktikum.managers;
 
 import java.io.IOException;
 import java.net.URI;
@@ -39,11 +39,13 @@ public class KVTaskClient {
         try {
             final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() == 200) {
-                httpTaskManager = response.body();
+                if(response.body() != null){
+                    httpTaskManager = response.body();
+                }
             } else {
                 System.out.println("Что-то пошло не так. Сервер вернул код состояния: " + response.statusCode());
             }
-        } catch (NullPointerException | IOException | InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             System.out.println("Во время выполнения запроса возникла ошибка.\n" +
                     "Проверьте, пожалуйста, адрес и повторите попытку.");
         }

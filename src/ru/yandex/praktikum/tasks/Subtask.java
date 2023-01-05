@@ -1,4 +1,4 @@
-package tasks;
+package ru.yandex.praktikum.tasks;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -6,12 +6,6 @@ import java.util.Objects;
 public class Subtask extends Task {
 
     private Epic epic;
-
-   /* private LocalDateTime endTime;
-
-    private LocalDateTime startTime;
-
-    private int duration;*/
 
     public Subtask(String name, String description, Status status, Epic epic) {
         super(name, description, status);

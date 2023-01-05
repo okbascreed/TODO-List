@@ -1,6 +1,10 @@
 
-import managers.*;
-import tasks.*;
+import ru.yandex.praktikum.managers.HttpTaskManager;
+import ru.yandex.praktikum.managers.HttpTaskServer;
+import ru.yandex.praktikum.managers.KVServer;
+import ru.yandex.praktikum.tasks.Status;
+import ru.yandex.praktikum.tasks.Task;
+import ru.yandex.praktikum.tasks.TaskType;
 
 import java.io.IOException;
 import java.time.LocalDateTime;

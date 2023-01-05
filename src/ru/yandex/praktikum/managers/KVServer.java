@@ -1,4 +1,4 @@
-package managers;
+package ru.yandex.praktikum.managers;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 

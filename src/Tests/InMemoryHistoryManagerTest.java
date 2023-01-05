@@ -1,10 +1,12 @@
-package managers;
+package Tests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tasks.Status;
-import tasks.Task;
-import tasks.TaskType;
+import ru.yandex.praktikum.managers.InMemoryHistoryManager;
+import ru.yandex.praktikum.managers.InMemoryTaskManager;
+import ru.yandex.praktikum.tasks.Status;
+import ru.yandex.praktikum.tasks.Task;
+import ru.yandex.praktikum.tasks.TaskType;
 
 import java.time.LocalDateTime;
 import java.util.List;

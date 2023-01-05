@@ -1,7 +1,9 @@
-package managers;
+package Tests;
 
+import Tests.TaskManagerTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.praktikum.managers.InMemoryTaskManager;
 
 class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
